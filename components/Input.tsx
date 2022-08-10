@@ -7,10 +7,10 @@ interface InputProps {
     placeholder: string;
     onSelect: (index: number) => void;
     isPayment: boolean;
-    children?: React.ReactNode;
+    icon?: JSX.Element;
 }
 
-const StyledAuto = styled(Autocomplete, {classProps: ["placeholder", "onSelect", "value", "onChangeText"]})
+const StyledAuto = styled(Autocomplete, {classProps: ["placeholder", "onSelect", "value", "onChangeText", "accessoryLeft"]})
 
 const movies = [
   { title: 'Star Wars' },
@@ -40,8 +40,9 @@ export const Input: React.FC<InputProps> = (props) => {
 
   return (
     <StyledAuto
-      className="-top-12 bg-gray-700 rounded-lg border-0"
+      className="bg-gray-700 rounded-lg border-0"
       placeholder={props.placeholder}
+      accessoryLeft={props.icon}
       value={value}
       onSelect={props.onSelect}
       onChangeText={onChangeText}>
