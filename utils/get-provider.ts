@@ -1,22 +1,23 @@
-import { Connection } from '@solana/web3.js';
+import { Connection, PublicKey, Transaction } from '@solana/web3.js';
 import { AnchorProvider } from '@project-serum/anchor';
 import { WalletNotConnectedError } from '@solana/wallet-adapter-base';
-import { WalletContextState } from '@solana/wallet-adapter-react';
-require('@solana/wallet-adapter-react-ui/styles.css');
+import {Web3MobileWallet} from '@solana-mobile/mobile-wallet-adapter-protocol-web3js';
+import useAuthorization from '../utils/useAuthorization';
 
 const commitment = "processed"
 
-export default async function getProvider(wallet: WalletContextState, connection: Connection) {
-    if (!wallet || !wallet.publicKey || !wallet.signTransaction || !wallet.signAllTransactions) throw new WalletNotConnectedError();
+export default async function getProvider(wallet: Web3MobileWallet, connection: Connection, pk: PublicKey) {
+    if (!wallet || !wallet.signTransactions) throw new WalletNotConnectedError();
 
     const signerWallet = {
-        publicKey: wallet.publicKey,
-        signTransaction: wallet.signTransaction,
-        signAllTransactions: wallet.signAllTransactions,
+        signTransaction: async (txn: Transaction) => (await wallet.signTransactions({transactions: [txn]}))[0],
+        signAllTransactions: async (txns: Transaction[]) => await wallet.signTransactions({transactions: txns}),
+        publicKey: pk
     };
 
     const provider = new AnchorProvider(
       connection, signerWallet, { preflightCommitment: commitment }
     );
+    
     return provider;
   }

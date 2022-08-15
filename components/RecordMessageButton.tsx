@@ -49,7 +49,7 @@ export default function RecordMessageButton({children, message}: Props) {
             // ...or the newly authorized public key.
             freshAccount.publicKey,
         }).add(
-          new TransactionInstruction({
+          new TransactionInstuction({
             data: messageBuffer,
             keys: [],
             programId: new PublicKey(
